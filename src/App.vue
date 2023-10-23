@@ -5,15 +5,36 @@
     <div class="d-flex justify-content-center h-100">
 
 <div class="searcbar w-50 mx-2">
-  <input type="text" class="input form-control" placeholder="Enter a City">
+  <input type="text" class="input form-control" v-model="city" placeholder="Enter a City">
 </div>
 <button type="button" class="btn-search btn btn-primary">Search <i class="fa fa-search" aria-hidden="true"></i></button>
 
     </div>
   </div>
 </div>
+<br>
+<weather></weather>
 </template>
-
+<script>
+import Weather from './components/Weather.vue';
+export default {
+  name: "App",
+  components: {Weather},
+  data() {
+    return {
+      city: "",
+      showWeather:false,
+    }
+  },
+  methods: {
+    async searchWeather() {
+      this.showWeather = false;
+      await this.$nextTick();
+      this.showWeather = true;
+    }
+  },
+}
+</script>
 <style lang="scss">
 body{
   background-color: #121212 !important;

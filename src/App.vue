@@ -7,13 +7,13 @@
 <div class="searcbar w-50 mx-2">
   <input type="text" class="input form-control" v-model="city" placeholder="Enter a City">
 </div>
-<button type="button" class="btn-search btn btn-primary">Search <i class="fa fa-search" aria-hidden="true"></i></button>
+<button type="button" class="btn-search btn btn-primary" @click="searchWeather">Search <i class="fa fa-search" aria-hidden="true"></i></button>
 
     </div>
   </div>
 </div>
 <br>
-<weather></weather>
+<weather :city="city" v-if="showWeather"></weather>
 </template>
 <script>
 import Weather from './components/Weather.vue';

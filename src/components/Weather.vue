@@ -4,50 +4,85 @@
       <div class="card main-div w-100">
         <div class="p-3">
           <h2 class="mb-1 day">Tuesday</h2>
-          <p class="text-light date mb-0">date</p>
+          <p class="text-light date mb-0">{{date}}</p>
           <small>time</small>
           <h2 class="place">
-            <i class="fas fa-location">Rio <small>county</small></i>
+            <i class="fas fa-location">{{ name }} <small>{{county}}</small></i>
           </h2>
           <div class="temp">
-            <h1 class="weather-temp">19&deg;</h1>
-            <h2 class="text-light">description</h2>
+            <h1 class="weather-temp">{{temperature}}&deg;</h1>
+            <h2 class="text-light">{{description}} <img :src="iconurl"></h2>
           </div>
         </div>
       </div>
-    </div>
-    <div class="card card-2 w-100">
-      <table class="m-4">
-        <tbody>
-          <tr>
-            <th>Sea Level</th>
-            <td>100</td>
-          </tr>
-          <tr>
-            <th>Sea Level</th>
-            <td>100</td>
-          </tr>
-          <tr>
-            <th>Sea Level</th>
-            <td>100</td>
-          </tr>
-        </tbody>
-      </table>
-      <div id="div_form" class="d-flex m-3 justify-content-center">
-        <form action="">
-          <input
-            type="text"
-            value="Change Location"
-            class="btn change-btn btn-primary"
-          />
-        </form>
+      <div class="card card-2 w-100">
+        <table class="m-4">
+          <tbody>
+            <tr>
+              <th>Sea Level</th>
+              <td>100</td>
+            </tr>
+            <tr>
+              <th>Sea Level</th>
+              <td>100</td>
+            </tr>
+            <tr>
+              <th>Sea Level</th>
+              <td>100</td>
+            </tr>
+          </tbody>
+        </table>
+        <days-weather></days-weather>
+        <div id="div_form" class="d-flex m-3 justify-content-center">
+          <form action="">
+            <input
+              type="text"
+              value="Change Location"
+              class="btn change-btn btn-primary"
+            />
+          </form>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
+import axios from "axios";
+import DaysWeather from "./DaysWeather.vue";
 export default {
+  components: { DaysWeather },
   name: "Weather",
+  props: {
+    city: String,
+  },
+  data() {
+    return {
+      temperature: null,
+      description: null,
+      iconurl: null,
+      date: null,
+      time: null,
+      name: null,
+      monthNames: ["January", "February", "March", "April", "May", "June", "July", "August"
+        , "September", "October","November","December"],
+    };
+  },
+
+  async created() {
+    const response = await axios.get(
+      `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=metric&appid=5165e738fc14279c38d921614426c7bc`
+    );
+    const weatherData = response.data;
+    this.temperature =Math.round(weatherData.main.temp);
+    this.description = weatherData.weather[0].description;
+    this.iconurl = `http://api.openweathermap.org/img/w/${weatherData.weather[0].icon}.png`;
+    this.name = weatherData.name;
+    const d = new Date();
+    this.date = d.getDate() + '-' + this.monthNames[d.getMonth()] + '-' + d.getFullYear();
+    this.time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+
+    console.log(weatherData);
+  },
 };
 </script>
 <style>
@@ -83,8 +118,8 @@ h2.mb-1.day {
   z-index: 1;
 }
 .card-2 {
-  background-color: #212730!important;
-  border-radius: 20px!important;
+  background-color: #212730 !important;
+  border-radius: 20px !important;
 }
 .card-details {
   margin-left: 19px;

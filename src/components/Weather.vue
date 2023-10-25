@@ -1,13 +1,13 @@
 <template>
   <div class="container p-0">
-    <div class="d-flex">
+    <div class="d-flex ph">
       <div class="card main-div w-100">
         <div class="p-3">
-          <h2 class="mb-1 day">Tuesday</h2>
+          <h2 class="mb-1 day">{{ day}}</h2>
           <p class="text-light date mb-0">{{date}}</p>
-          <small>time</small>
+          <small>{{time}}</small>
           <h2 class="place">
-            <i class="fas fa-location">{{ name }} <small>{{county}}</small></i>
+            <i class="fas fa-location">{{ name }} <small>{{country}}</small></i>
           </h2>
           <div class="temp">
             <h1 class="weather-temp">{{temperature}}&deg;</h1>
@@ -20,22 +20,23 @@
           <tbody>
             <tr>
               <th>Sea Level</th>
-              <td>100</td>
+              <td>{{ sea_level }}</td>
             </tr>
             <tr>
-              <th>Sea Level</th>
-              <td>100</td>
+              <th> humidity </th>
+              <td>{{ humidity }}</td>
             </tr>
             <tr>
-              <th>Sea Level</th>
-              <td>100</td>
+              <th>wind</th>
+              <td>{{ wind }}</td>
             </tr>
           </tbody>
         </table>
-        <days-weather></days-weather>
+        <days-weather :cityname="cityname"></days-weather>
         <div id="div_form" class="d-flex m-3 justify-content-center">
-          <form action="">
+          <form action="" class="text-center">
             <input
+            @click="changeLocation"
               type="text"
               value="Change Location"
               class="btn change-btn btn-primary"
@@ -57,15 +58,39 @@ export default {
   },
   data() {
     return {
+      day: null,
+cityname:this.city,
       temperature: null,
       description: null,
       iconurl: null,
       date: null,
       time: null,
       name: null,
+      country:null,
+      wind: null,
+      sea_level: null,
+      humidity: null,
+      
       monthNames: ["January", "February", "March", "April", "May", "June", "July", "August"
-        , "September", "October","November","December"],
+        , "September", "October", "November", "December"],
+      //days name
+      daysName: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+        ],
+    
+        
     };
+  },
+  methods: {
+    changeLocation() {
+      window.location.reload();
+    }
   },
 
   async created() {
@@ -78,10 +103,16 @@ export default {
     this.iconurl = `http://api.openweathermap.org/img/w/${weatherData.weather[0].icon}.png`;
     this.name = weatherData.name;
     const d = new Date();
+    this.day =this.daysName[d.getDay()];
     this.date = d.getDate() + '-' + this.monthNames[d.getMonth()] + '-' + d.getFullYear();
     this.time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    this.country = weatherData.sys.country;
+    this.wind = Math.round(weatherData.wind.speed);
+    this.sea_level = Math.round(weatherData.main.pressure);
+     this.humidity = Math.round(weatherData.main.humidity) ;
+    
 
-    console.log(weatherData);
+    // console.log(weatherData);
   },
 };
 </script>
@@ -168,5 +199,17 @@ tr:hover {
 .change-btn:hover {
   transform: scale(0.9);
   transition: transform 0.1 ease;
+}
+@media (max-width: 430px) and (min-width: 290px){
+.d-flex.ph {
+    flex-direction: column;
+    display: flex !important;
+}
+.days>.li_active>div{
+  font-size: 14px;
+}
+.main-div{
+  height: 300px !important;
+}
 }
 </style>
